@@ -7,10 +7,12 @@ module Parser
     def test_initialize
       expected_source = 'some code'
       parser = ScopeParser.new expected_source
-      assert_empty parser.stack
       assert_equal 0 , parser.index
       assert_equal expected_source, parser.source_code
-      assert_nil parser.tree
+      parse_tree = parser.tree
+      assert_empty parse_tree.nodes
+      assert_equal :root, parse_tree.identifier
+      assert_equal parse_tree, parser.instance_variable_get(:@current_node)
     end
 
     def test_creates_parse_tree_from_class
@@ -18,13 +20,22 @@ module Parser
 end'
       parse_tree = ScopeParser.parse source_code
 
-      assert_equal :class, parse_tree.identifier
-      assert_equal 'SomeClass', parse_tree.name
-      assert_empty parse_tree.nodes
+      assert_equal 1, parse_tree.nodes.length
+      class_node = parse_tree.nodes[0]
+
+      assert_equal :class, class_node.identifier
+      assert_equal 'SomeClass', class_node.name
+      assert_empty class_node.nodes
     end
 
     def test_parser_seperators
-      assert_equal [' ', '.', "\n", "\t", '::', '(', ')', '{', '}', '[', ']'], ScopeParser.seperators
+      assert_equal [' ', '.', "\n", "\t", ':', '(', ')', '{', '}', '[', ']', '<'], ScopeParser.seperators
+    end
+
+    def test_parse_empty_string_returns_empty_node
+      tree = ScopeParser.parse ''
+      assert_equal :root, tree.identifier
+      assert_empty tree.nodes
     end
 
     def test_character_at
@@ -71,10 +82,31 @@ end'
 
       assert_equal 'class', parser.current_token
       parser.instance_variable_set(:@index, 7)
+      parser.instance_variable_set(:@index_of_last_seperator, 5)
       assert_equal 'SomeClass', parser.current_token
 
       parser.instance_variable_set(:@index, 20)
+      parser.instance_variable_set(:@index_of_last_seperator, 15)
       assert_equal 'some_object', parser.current_token
+    end
+
+    def test_index_of_last_seperator
+      source_code = 'class SomeClass'
+      parser = ScopeParser.new source_code
+      assert_equal 0, parser.index_of_last_seperator
+
+      parser.parse
+      assert_equal 5, parser.index_of_last_seperator
+    end
+
+    def test_index_of_next_seperator
+      source_code = 'class SomeClass'
+      parser = ScopeParser.new source_code
+
+      assert_equal 5, parser.index_of_next_seperator
+
+      parser.instance_variable_set(:@index, 8)
+      assert_equal source_code.length, parser.index_of_next_seperator
     end
 
   end
