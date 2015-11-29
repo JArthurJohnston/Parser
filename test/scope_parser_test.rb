@@ -1,4 +1,4 @@
-require_relative '../lib/scope_parser'
+require_relative '../lib/source_parser'
 require_relative '../test/parser_test'
 
 module Parser
@@ -6,7 +6,7 @@ module Parser
 
     def test_initialize
       expected_source = 'some code'
-      parser = ScopeParser.new expected_source
+      parser = SourceParser.new expected_source
       assert_equal 0 , parser.index
       assert_equal expected_source, parser.source_code
       parse_tree = parser.tree
@@ -18,7 +18,7 @@ module Parser
     def test_creates_parse_tree_from_class
       source_code = 'class SomeClass
 end'
-      parse_tree = ScopeParser.parse source_code
+      parse_tree = SourceParser.parse source_code
 
       assert_equal 1, parse_tree.nodes.length
       class_node = parse_tree.nodes[0]
@@ -29,11 +29,11 @@ end'
     end
 
     def test_parser_seperators
-      assert_equal [' ', '.', "\n", "\t", ':', '(', ')', '{', '}', '[', ']', '<'], ScopeParser.seperators
+      assert_equal [' ', '.', "\n", "\t", ':', '(', ')', '{', '}', '[', ']', '<'], SourceParser.seperators
     end
 
     def test_parse_empty_string_returns_empty_node
-      tree = ScopeParser.parse ''
+      tree = SourceParser.parse ''
       assert_equal :root, tree.identifier
       assert_empty tree.nodes
     end
@@ -43,7 +43,7 @@ end'
 end'
       newline_character = '
 '
-      parser = ScopeParser.new source_code
+      parser = SourceParser.new source_code
 
       assert_equal 'c', parser.character_at(0)
       assert_equal 'd', parser.character_at(source_code.length - 1)
@@ -59,7 +59,7 @@ end'
 end'
       newline_character = '
 '
-      parser = ScopeParser.new source_code
+      parser = SourceParser.new source_code
 
       assert_equal 'c', parser.current_character
 
@@ -78,7 +78,7 @@ end'
       source_code = 'class SomeClass
   some_object.some_method(an_argument)
 end'
-      parser = ScopeParser.new source_code
+      parser = SourceParser.new source_code
 
       assert_equal 'class', parser.current_token
       parser.instance_variable_set(:@index, 7)
@@ -92,7 +92,7 @@ end'
 
     def test_index_of_last_seperator
       source_code = 'class SomeClass'
-      parser = ScopeParser.new source_code
+      parser = SourceParser.new source_code
       assert_equal 0, parser.index_of_last_seperator
 
       parser.parse
@@ -101,7 +101,7 @@ end'
 
     def test_index_of_next_seperator
       source_code = 'class SomeClass'
-      parser = ScopeParser.new source_code
+      parser = SourceParser.new source_code
 
       assert_equal 5, parser.index_of_next_seperator
 

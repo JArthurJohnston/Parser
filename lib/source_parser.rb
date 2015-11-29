@@ -1,8 +1,9 @@
 require_relative '../lib/Nodes/node'
 require_relative '../lib/Nodes/class_node'
+require_relative '../lib/class_parser'
 
 module Parser
-  class ScopeParser
+  class SourceParser
     attr_reader :source_code,
                 :index,
                 :tree,
@@ -19,9 +20,9 @@ module Parser
       end
     end
 
-    def initialize source_code
+    def initialize source_code, index= 0
       @index_of_last_seperator = 0
-      @index = 0
+      @index = index
       @source_code = source_code
       @tree = Nodes::Node.new :root
       @current_node = @tree
@@ -41,14 +42,13 @@ module Parser
       @current_node
     end
 
+    def parse_from an_index
+      @index = an_index
+      self.parse
+    end
+
     def parse_class_node
-      class_node = Nodes::ClassNode.new
-      @index_of_last_seperator = index_of_next_seperator
-      @index = @index_of_last_seperator + 1
-      class_name = current_token
-      class_node.name= class_name
-      @current_node.add class_node
-      @index = index_of_next_seperator
+      @current_node.add ClassParser.parse_from @source_code, @index
     end
 
     def index_of_next_seperator
