@@ -5,11 +5,36 @@ module MethodParser
     @index = 0
     @source_code = source_code
     parsed_method = ParsedMethod.new
-    while @index < source_code.length
-      @index += 1
-      
-    end
+    parsed_method.name = parse_name
+    parsed_method.arguments = parse_arguments
     parsed_method
+  end
+
+  def parse_name
+    @index = next_seperator_index
+    substring(0, @index).strip
+  end
+
+  def parse_arguments
+    has_arguments = false
+    arguments = []
+    while @index < @source_code.length
+      case @source_code[@index]
+        when "\n"
+          unless has_arguments
+            return arguments
+          end
+        when ','
+        when '('
+          has_arguments = true
+        when ')'
+          has_arguments = false
+          # pase last argument
+          return arguments
+      end
+      @index += 1
+    end
+    arguments
   end
 
   def next_seperator_index
@@ -22,6 +47,21 @@ module MethodParser
     end
   end
 
+  def next_nonwhite_character
+    while @index < @source_code.length
+      current_char = @source_code[@index]
+      unless [' ', "\t", "\n"].include? current_char
+        return current_char
+      end
+      @index += 1
+    end
+    return ''
+  end
+
+  def substring start_index, end_index
+    @source_code[start_index, end_index - start_index]
+  end
+
   def character_at index
     return @source_code[index]
   end
@@ -30,19 +70,5 @@ module MethodParser
     return [' '].include? a_string
   end
 
-  class ParsedMethod
-
-  end
-
-  class SyntaxTree
-    attr_reader :token,
-                :nodes
-
-    def initialize token_string
-      @token = token_string
-      @nodes = []
-    end
-
-  end
 
 end
