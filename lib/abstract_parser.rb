@@ -1,53 +1,54 @@
-class AbstractParser
-  attr_reader :source_code,
-              :index
+module Parser
+  class AbstractParser
+    attr_reader :source_code,
+                :index
 
-  def initialize(source_code)
-    @source_code = source_code
-    @index = 0
-  end
+    def initialize(source_code)
+      @source_code = source_code
+      @index = 0
+    end
 
-  def substring start_index, end_index
-    @source_code[start_index, end_index - start_index]
-  end
+    def substring start_index, end_index
+      @source_code[start_index, end_index - start_index]
+    end
 
-  def token start_index, end_index
-    substring(start_index, end_index).strip
-  end
+    def token start_index, end_index
+      substring(start_index, end_index).strip
+    end
 
-  def is_separator? a_string
-    [' ', ',', '.', '(', ')'].include? a_string
-  end
+    def is_separator? a_string
+      [' ', ',', '.', '(', ')'].include? a_string
+    end
 
-  def next_separator_index
-    find_separator_index 1
-  end
+    def next_separator_index
+      find_separator_index 1
+    end
 
-  def previous_separator_index
-    find_separator_index -1
-  end
+    def previous_separator_index
+      find_separator_index -1
+    end
 
-  def next_nonwhite_character
-    find_nonwhite_character 1
-  end
+    def next_nonwhite_character
+      find_nonwhite_character 1
+    end
 
-  def next_nonwhite_index
-    find_nonwhite_index 1
-  end
+    def next_nonwhite_index
+      find_nonwhite_index 1
+    end
 
-  def previous_nonwhite_character
-    find_nonwhite_character -1
-  end
+    def previous_nonwhite_character
+      find_nonwhite_character -1
+    end
 
-  def current_token
-    token_at @index
-  end
+    def current_token
+      token_at @index
+    end
 
-  def current_character
-    character_at @index
-  end
+    def current_character
+      character_at @index
+    end
 
-  private
+    private
 
     def token_at index
       start_index = find_separator_index_from -1, index
@@ -92,34 +93,34 @@ class AbstractParser
       return ''
     end
 
-  def find_nonwhite_index direction
-    index = @index
-    while in_source_bounds?(index)
-      unless is_whitespace_at index
-        return index
+    def find_nonwhite_index direction
+      index = @index
+      while in_source_bounds?(index)
+        unless is_whitespace_at index
+          return index
+        end
+        index += direction
       end
-      index += direction
+      index
     end
-    index
-  end
 
-  def in_source_bounds?(index)
-    index >= 0 and index < @source_code.length
-  end
-
-  def index_in_bounds?
-    in_source_bounds? @index
-  end
-
-  def while_within_bounds! &block
-    while in_source_bounds? @index
-      block.call
-      @index += 1
+    def in_source_bounds?(index)
+      index >= 0 and index < @source_code.length
     end
-  end
 
-  def is_whitespace_at index
+    def index_in_bounds?
+      in_source_bounds? @index
+    end
+
+    def while_within_bounds! &block
+      while in_source_bounds? @index
+        block.call
+        @index += 1
+      end
+    end
+
+    def is_whitespace_at index
       [' ', "\t", "\n"].include? @source_code[index]
     end
-
+  end
 end

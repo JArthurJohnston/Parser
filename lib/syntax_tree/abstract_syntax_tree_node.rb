@@ -1,5 +1,11 @@
 require_relative 'syntax_tree'
 
-class AbstractSyntaxTreeNode < SyntaxTree
-  attr_accessor :parent
+module Parser
+  module ParseTrees
+
+    class AbstractSyntaxTreeNode < SyntaxTree
+      attr_accessor :parent
+    end
+
+  end
 end
