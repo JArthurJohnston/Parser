@@ -1,8 +1,7 @@
 require_relative '../lib/syntax_tree'
 require_relative '../lib/string_parser'
 
-class ScopeParser
-  include StringParser
+class ScopeParser < AbstractParser
 
   attr_reader :source,
               :index

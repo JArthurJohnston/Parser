@@ -2,53 +2,93 @@ require_relative 'parser_test'
 require_relative '../lib/method_parser'
 
 class MethodParserTest < ParserTest
-  include MethodParser
-  @@simple_method_example = 'simple_method arg_1, arg_2
+
+
+  def test_parses_method_name
+    example_source = 'simple_method arg_1, arg_2
   var_x = 5 + 5
   return var_x
 end'
+    parser = MethodParser.new example_source
 
-  def test_parses_method_name
-    parsed_method = parse @@simple_method_example
+    parsed_method = parser.parse
+
     assert_equal 'simple_method', parsed_method.name
   end
 
   def test_parses_method_arguments
-    parsed_method = parse @@simple_method_example
+    examples = ['simple_method(arg_1, arg_2)
+  var_x = 5 + 5
+  return var_x
+end',
+                'simple_method arg_1, arg_2
+  var_x = 5 + 5
+  return var_x
+end',
+                'simple_method arg_1,
+                                    arg_2
+  var_x = 5 + 5
+  return var_x
+end',
+                'simple_method arg_1,
+                                    arg_2
+  var_x = 5 + 5
+  return var_x
+end']
+
+    examples.each do
+      |each_example|
+      parser = MethodParser.new each_example
+
+      parsed_method = parser.parse
+      assert_equal ['arg_1', 'arg_2'], parsed_method.arguments, 'failed on: ' + each_example
+    end
+  end
+
+  def test_parses_method_body
+    example_source = 'simple_method(arg_1, arg_2)
+  var_x = 5 + 5
+  return var_x
+end'
+    parser = MethodParser.new example_source
+
+    parsed_method = parser.parse
+    assert_equal 'var_x = 5 + 5
+  return var_x', parsed_method.body
+  end
+
+
+  def test_parses_method_body_without_argument_params
+    example_source = 'simple_method arg_1, arg_2
+  var_x = 5 + 5
+  return var_x
+end'
+    parser = MethodParser.new example_source
+
+    parsed_method = parser.parse
+    assert_equal 'var_x = 5 + 5
+  return var_x', parsed_method.body
+  end
+
+  def test_parses_method_args_with_default_values
+    example_source = 'simple_method(arg_1 = 5, arg_2 = 7)
+  var_x = 5 + 5
+  return var_x
+end'
+    parser = MethodParser.new example_source
+
+    parsed_method = parser.parse
     assert_equal ['arg_1', 'arg_2'], parsed_method.arguments
+
   end
 
-  def test_is_seperator
-    assert is_seperator? ' '
-    refute is_seperator? 'a'
+  def test_skips_single_line_comments
+    fail 'write me'
   end
 
-  def test_syntax_tree
-    expected_token = 'some token'
-    tree = SyntaxTree.new expected_token
-    assert_equal expected_token, tree.token
-    assert_empty tree.nodes
+  def test_skip_multi_line_comments
+    fail 'write me'
   end
 
-  def test_next_nonwhite_character
-    example_source = " someting  wicked\nthis \t way
-comes ."
-
-    @source_code = example_source
-
-    @index = 0
-    assert_equal 's', next_nonwhite_character
-    @index = 9
-    assert_equal 'w', next_nonwhite_character
-    @index = 17
-    assert_equal 't', next_nonwhite_character
-    @index = 22
-    assert_equal 'w', next_nonwhite_character
-    @index = 28
-    assert_equal 'c', next_nonwhite_character
-
-    @index = 2432
-    assert_equal '', next_nonwhite_character
-  end
 
 end

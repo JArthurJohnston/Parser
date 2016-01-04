@@ -4,4 +4,9 @@ class SyntaxTree
   def initialize
     @nodes = []
   end
+
+  def add node
+    @nodes.push node
+    node.parent= self
+  end
 end
