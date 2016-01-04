@@ -58,6 +58,19 @@ end'
   return var_x', parsed_method.body
     end
 
+    def test_parses_method_with_no_arguments
+      example_source = 'simple_method
+  var_x = 5 + 5
+  return var_x
+end'
+      parser = MethodParser.new example_source
+
+      parsed_method = parser.parse
+      assert_equal 'var_x = 5 + 5
+  return var_x', parsed_method.body
+      assert_empty parsed_method.arguments
+    end
+
 
     def test_parses_method_body_without_argument_params
       example_source = 'simple_method arg_1, arg_2
