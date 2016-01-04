@@ -32,6 +32,10 @@ module Parser
 
     private
 
+    def skip_to! index
+      @index = index
+    end
+
     def token_at index
       start_index = find_separator_index_from -1, index
       end_index = find_separator_index_from 1, index

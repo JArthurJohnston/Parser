@@ -10,6 +10,10 @@ module Parser
       find_nonwhite_index 1
     end
 
+    def next_nonwhite_index_from index
+      find_nonwhite_index_from 1, index
+    end
+
     def previous_nonwhite_character
       find_nonwhite_character -1
     end
@@ -33,7 +37,11 @@ module Parser
     end
 
     def find_nonwhite_index direction
-      index = @index
+      find_nonwhite_index_from direction, @index
+    end
+
+    def find_nonwhite_index_from direction, an_index
+      index = an_index
       while in_source_bounds?(index)
         unless is_whitespace_at index
           return index

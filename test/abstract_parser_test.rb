@@ -101,6 +101,9 @@ module Parser
       parser.instance_variable_set(:@index, 0)
       assert_equal 2, parser.next_nonwhite_index
 
+      parser.instance_variable_set(:@index, 2)
+      assert_equal 2, parser.next_nonwhite_index
+
       parser.instance_variable_set(:@index, 6)
       assert_equal 9, parser.next_nonwhite_index
 

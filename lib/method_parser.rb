@@ -43,6 +43,7 @@ module Parser
           when ','
             has_arguments = true
             arguments.push(token(argument_index, @index))
+            skip_to! next_nonwhite_index_from(@index + 1) - 1
             argument_index = @index + 1
           when '('
             has_arguments = true

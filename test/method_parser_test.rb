@@ -71,6 +71,24 @@ end'
   return var_x', parsed_method.body
     end
 
+    def test_parses_method_body_with_multiple_scopes
+      expected_body =
+          "var_x = arg_1 + 5\n" +
+          "\t\tif var_x > 10\n" +
+          "\t\treturn nil\n" +
+          "\tend\n" +
+          "\treturn var_x"
+      example_source =
+          "simple_method arg_1, arg_2\n\t" +
+              expected_body +
+          "\nend"
+
+      parser = MethodParser.new example_source
+
+      parsed_method = parser.parse
+      assert_equal expected_body, parsed_method.body
+    end
+
     def test_parses_method_args_with_default_values
       example_source = 'simple_method(arg_1 = 5, arg_2 = 7)
   var_x = 5 + 5
