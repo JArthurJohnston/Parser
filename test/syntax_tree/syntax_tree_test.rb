@@ -1,11 +1,11 @@
-require_relative '../parser_test'
+require_relative '../parser_test_case'
 require_relative '../../lib/syntax_tree/syntax_tree'
 require_relative '../../lib/syntax_tree/abstract_syntax_tree_node'
 
 module Parser
   module ParseTrees
 
-    class SyntaxTreeTest < ParserTest
+    class SyntaxTreeTest < ParserTestCase
 
       def test_tree_fields
         tree = SyntaxTree.new

@@ -2,7 +2,7 @@
 module SeparatorParsing
 
   def is_separator? a_string
-    [' ', ',', '.', '(', ')'].include? a_string
+    [' ', ',', '.', '(', ')', "\n"].include? a_string
   end
 
   def next_separator_index

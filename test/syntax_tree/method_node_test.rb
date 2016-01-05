@@ -1,10 +1,10 @@
-require_relative '../../test/parser_test'
+require_relative '../../test/parser_test_case'
 require_relative '../../lib/syntax_tree/method_node'
 
 module Parser
   module ParseTrees
 
-    class MethodNodeTest < ParserTest
+    class MethodNodeTest < ParserTestCase
 
       def test_method_node_fields
         expected_name = 'sjfkdsklj'

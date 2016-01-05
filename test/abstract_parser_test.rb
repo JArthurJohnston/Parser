@@ -1,9 +1,9 @@
 require_relative '../lib/abstract_parser'
-require_relative 'parser_test'
+require_relative 'parser_test_case'
 
 module Parser
 
-  class AbstractParserTest < ParserTest
+  class AbstractParserTest < ParserTestCase
 
     def test_abstract_parser_fields
       expected_source = 'skfjsdkfj'
